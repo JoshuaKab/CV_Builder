@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CVData } from './types';
 import { generateCoverLetter } from './geminiService';
-import { FileText, Sparkles, Loader2, Copy, Check, Download } from 'lucide-react';
+import { FileText, Sparkles, Loader2, Copy, Check, Download, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface CoverLetterGeneratorProps {
@@ -37,11 +37,16 @@ export const CoverLetterGenerator: React.FC<CoverLetterGeneratorProps> = ({ cvDa
 
   return (
     <div className="bento-card p-10 h-full flex flex-col">
-      <div className="flex items-center gap-3 mb-8">
-        <div className="p-2 bg-purple-50 text-purple-600 rounded-xl">
-          <FileText size={22} />
+      <div className="flex items-center justify-between mb-10">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-purple-50 text-purple-600 rounded-2xl shadow-lg shadow-purple-100">
+            <Zap size={24} fill="currentColor" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none">AI Cover Letter</h2>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">Tailored to your CV</p>
+          </div>
         </div>
-        <h2 className="text-lg font-black text-slate-900 tracking-tight">AI Cover Letter</h2>
       </div>
 
       <div className="space-y-6 mb-8">

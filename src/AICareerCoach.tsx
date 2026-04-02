@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   ArrowRight,
   Sparkles,
+  TrendingUp,
   Award,
   BookOpen
 } from 'lucide-react';
@@ -67,14 +68,14 @@ export const AICareerCoach: React.FC<AICareerCoachProps> = ({ onboardingData }) 
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-10">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-slate-900 text-white rounded-2xl shadow-xl shadow-slate-200/50">
-            <Sparkles size={24} />
+          <div className="p-3 bg-slate-950 text-white rounded-2xl shadow-xl shadow-slate-200/50 -rotate-3">
+            <Sparkles size={24} fill="currentColor" className="text-brand-400" />
           </div>
           <div>
-            <h2 className="text-2xl font-black text-slate-900 tracking-tighter">AI Career Coach</h2>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Personalized Strategy for {onboardingData.jobTitle}</p>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tighter leading-none">AI Career Coach</h2>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">Personalized Strategy for {onboardingData.jobTitle}</p>
           </div>
         </div>
       </div>
@@ -108,26 +109,38 @@ export const AICareerCoach: React.FC<AICareerCoachProps> = ({ onboardingData }) 
             transition={{ duration: 0.3 }}
           >
             {activeTab === 'roadmap' && (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {roadmap.roadmap.map((step, index) => (
-                  <div key={index} className="flex gap-6 group">
+                  <div key={index} className="flex gap-8 group">
                     <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-black text-sm relative z-10 group-hover:scale-110 transition-transform">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-950 text-white flex items-center justify-center font-black text-lg relative z-10 group-hover:scale-110 transition-transform shadow-xl shadow-slate-200/50 -rotate-3">
                         {index + 1}
                       </div>
                       {index !== roadmap.roadmap.length - 1 && (
-                        <div className="w-0.5 flex-1 bg-slate-100 my-2" />
+                        <div className="w-0.5 flex-1 bg-slate-100 my-4" />
                       )}
                     </div>
-                    <div className="flex-1 pb-10">
-                      <div className="bento-card p-6 hover:border-brand-200 transition-colors">
-                        <div className="flex justify-between items-start mb-3">
-                          <h4 className="text-lg font-black text-slate-900 tracking-tight">{step.step}</h4>
-                          <span className="px-3 py-1 bg-brand-50 text-brand-600 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                    <div className="flex-1 pb-12">
+                      <div className="bento-card p-8 hover:border-brand-200 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/50">
+                        <div className="flex justify-between items-start mb-4">
+                          <h4 className="text-2xl font-black text-slate-900 tracking-tight">{step.step}</h4>
+                          <span className="px-4 py-1.5 bg-brand-50 text-brand-600 rounded-xl text-[10px] font-black uppercase tracking-[0.2em]">
                             {step.timeframe}
                           </span>
                         </div>
-                        <p className="text-slate-600 leading-relaxed font-medium">{step.description}</p>
+                        <p className="text-slate-600 leading-relaxed font-medium mb-6 text-lg">{step.description}</p>
+                        
+                        <div className="space-y-3">
+                          <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Key Milestones</h5>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {step.milestones.map((milestone, mIdx) => (
+                              <div key={mIdx} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                <CheckCircle2 size={16} className="text-brand-500 shrink-0" />
+                                <span className="text-sm font-bold text-slate-700">{milestone}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -136,52 +149,132 @@ export const AICareerCoach: React.FC<AICareerCoachProps> = ({ onboardingData }) 
             )}
 
             {activeTab === 'skills' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {roadmap.skillsToAcquire.map((skill, index) => (
-                  <div key={index} className="bento-card p-6 flex items-center gap-4 group hover:border-brand-200 transition-colors">
-                    <div className="p-3 bg-brand-50 text-brand-600 rounded-xl group-hover:bg-brand-600 group-hover:text-white transition-colors">
-                      <Award size={20} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {roadmap.skillsDevelopment.map((item, index) => (
+                  <div key={index} className="bento-card p-8 flex flex-col gap-6 group hover:border-brand-200 transition-all duration-500">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-4">
+                        <div className={`p-3 rounded-2xl shadow-lg ${
+                          item.importance === 'High' ? 'bg-red-50 text-red-600 shadow-red-100' :
+                          item.importance === 'Medium' ? 'bg-amber-50 text-amber-600 shadow-amber-100' :
+                          'bg-blue-50 text-blue-600 shadow-blue-100'
+                        }`}>
+                          <Award size={24} />
+                        </div>
+                        <div>
+                          <h4 className="text-xl font-black text-slate-900 tracking-tight">{item.skill}</h4>
+                          <span className={`text-[10px] font-black uppercase tracking-widest ${
+                            item.importance === 'High' ? 'text-red-500' :
+                            item.importance === 'Medium' ? 'text-amber-500' :
+                            'text-blue-500'
+                          }`}>
+                            {item.importance} Priority
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <span className="font-black text-slate-900 tracking-tight">{skill}</span>
+
+                    <div className="space-y-4">
+                      <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Current Gap</h5>
+                        <p className="text-sm font-medium text-slate-600 leading-relaxed">{item.gap}</p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Recommended Resources</h5>
+                        <div className="flex flex-wrap gap-2">
+                          {item.resources.map((resource, rIdx) => (
+                            <div key={rIdx} className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 flex items-center gap-2">
+                              <BookOpen size={12} className="text-brand-500" />
+                              {resource}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
             )}
 
             {activeTab === 'advice' && (
-              <div className="space-y-4">
-                {roadmap.strategicAdvice.map((advice, index) => (
-                  <div key={index} className="bento-card p-6 flex gap-4 group hover:border-brand-200 transition-colors">
-                    <div className="p-3 bg-amber-50 text-amber-600 rounded-xl h-fit">
-                      <Lightbulb size={20} />
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
+                      <Target size={20} />
                     </div>
-                    <p className="text-slate-700 font-medium leading-relaxed">{advice}</p>
+                    <h3 className="text-lg font-black text-slate-900 tracking-tight">Job Search</h3>
                   </div>
-                ))}
+                  {roadmap.strategy.jobSearch.map((item, i) => (
+                    <div key={i} className="bento-card p-6 border-l-4 border-l-blue-500 hover:translate-x-1 transition-transform">
+                      <p className="text-slate-700 font-medium leading-relaxed">{item}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="p-2 bg-purple-50 text-purple-600 rounded-xl">
+                      <Compass size={20} />
+                    </div>
+                    <h3 className="text-lg font-black text-slate-900 tracking-tight">Networking</h3>
+                  </div>
+                  {roadmap.strategy.networking.map((item, i) => (
+                    <div key={i} className="bento-card p-6 border-l-4 border-l-purple-500 hover:translate-x-1 transition-transform">
+                      <p className="text-slate-700 font-medium leading-relaxed">{item}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
+                      <TrendingUp size={20} />
+                    </div>
+                    <h3 className="text-lg font-black text-slate-900 tracking-tight">Growth</h3>
+                  </div>
+                  {roadmap.strategy.growthOpportunities.map((item, i) => (
+                    <div key={i} className="bento-card p-6 border-l-4 border-l-amber-500 hover:translate-x-1 transition-transform">
+                      <p className="text-slate-700 font-medium leading-relaxed">{item}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
             {activeTab === 'interview' && (
-              <div className="space-y-6">
-                {roadmap.interviewQuestions.map((item, index) => (
-                  <div key={index} className="bento-card p-8 space-y-4 hover:border-brand-200 transition-colors">
-                    <div className="flex gap-4">
-                      <div className="p-2 bg-slate-100 text-slate-600 rounded-lg h-fit">
-                        <MessageSquare size={18} />
-                      </div>
-                      <h4 className="text-xl font-black text-slate-900 leading-tight tracking-tight">
-                        {item.question}
-                      </h4>
-                    </div>
-                    <div className="pl-12">
-                      <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <div className="flex items-center gap-2 mb-2">
-                          <CheckCircle2 size={14} className="text-green-500" />
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Coach's Advice</span>
+              <div className="space-y-8">
+                {roadmap.interviewPrep.map((item, index) => (
+                  <div key={index} className="bento-card overflow-hidden group hover:border-brand-200 transition-all duration-500">
+                    <div className="p-8 bg-white border-b border-slate-100">
+                      <div className="flex gap-6">
+                        <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center font-black shrink-0">
+                          {index + 1}
                         </div>
-                        <p className="text-slate-600 text-sm font-medium leading-relaxed italic">
-                          "{item.advice}"
+                        <h4 className="text-2xl font-black text-slate-900 leading-tight tracking-tight">
+                          {item.question}
+                        </h4>
+                      </div>
+                    </div>
+                    <div className="p-8 bg-slate-50/50 space-y-6">
+                      <div className="space-y-3">
+                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Sample Answer</h5>
+                        <p className="text-slate-700 font-medium leading-relaxed text-lg bg-white p-6 rounded-2xl border border-slate-100 shadow-sm italic">
+                          "{item.sampleAnswer}"
                         </p>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Key Points to Hit</h5>
+                        <div className="flex flex-wrap gap-3">
+                          {item.keyPoints.map((point, pIdx) => (
+                            <div key={pIdx} className="flex items-center gap-2 px-4 py-2 bg-brand-50 text-brand-700 rounded-xl text-sm font-bold border border-brand-100">
+                              <CheckCircle2 size={14} />
+                              {point}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>

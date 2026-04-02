@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { OnboardingData } from './types';
 import { motion } from 'motion/react';
+import { Logo } from './components/Logo';
 import { Briefcase, TrendingUp, Building2, ArrowRight } from 'lucide-react';
 
 interface OnboardingProps {
@@ -28,6 +29,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-lg bento-card p-12 space-y-8"
       >
+        <div className="flex flex-col items-center gap-6 mb-12">
+          <Logo size="lg" />
+        </div>
+
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">Let's Personalize Your CV</h1>
           <p className="text-slate-500 text-sm">Tell us a bit about your career goals so we can help you better.</p>

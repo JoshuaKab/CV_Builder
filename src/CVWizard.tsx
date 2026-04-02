@@ -540,14 +540,14 @@ export const CVWizard: React.FC<CVWizardProps> = ({ data, onChange, onComplete }
   return (
     <div className="flex flex-col h-full">
       {/* Progress Header */}
-      <div className="px-10 py-6 border-b border-slate-100 flex items-center justify-between bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+      <div className="px-10 py-8 border-b border-slate-100 flex items-center justify-between bg-white/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="flex items-center gap-4">
-          <div className="p-2 bg-brand-50 text-brand-600 rounded-xl">
-            {React.createElement(steps[currentStep].icon, { size: 20 })}
+          <div className="p-3 bg-brand-50 text-brand-600 rounded-2xl shadow-lg shadow-brand-100">
+            {React.createElement(steps[currentStep].icon, { size: 24 })}
           </div>
           <div>
-            <h2 className="text-sm font-black text-slate-900 uppercase tracking-widest">{steps[currentStep].title}</h2>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Step {currentStep + 1} of {steps.length}</p>
+            <h2 className="text-xl font-black text-slate-900 tracking-tight leading-none">{steps[currentStep].title}</h2>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Step {currentStep + 1} of {steps.length}</p>
           </div>
         </div>
         <div className="flex gap-2">

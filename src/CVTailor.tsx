@@ -61,10 +61,13 @@ export const CVTailor: React.FC<CVTailorProps> = ({ cvData, onTailored, onClose 
             
             <div className="relative z-10 space-y-12">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-white/10 rounded-2xl">
+                <div className="p-3 bg-white/10 rounded-2xl -rotate-3 shadow-2xl shadow-black/50">
                   <Target size={24} className="text-brand-400" />
                 </div>
-                <h2 className="text-2xl font-black tracking-tighter">AI CV Tailoring</h2>
+                <div>
+                  <h2 className="text-3xl font-black tracking-tighter leading-none">AI CV Tailoring</h2>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">Optimize for any role</p>
+                </div>
               </div>
 
               <div className="space-y-8">

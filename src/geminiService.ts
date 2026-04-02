@@ -91,22 +91,48 @@ export const tailorCV = async (cvData: CVData, jobDescription: string) => {
 export const getCareerRoadmap = async (onboarding: OnboardingData) => {
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
-    contents: `Generate a personalized career roadmap for:
+    contents: `Generate a comprehensive, personalized career roadmap and coaching suite for:
     Job Title: ${onboarding.jobTitle}
     Industry: ${onboarding.industry}
     Experience Level: ${onboarding.experienceLevel}
     
-    Return a JSON object with:
+    Return a JSON object matching this schema:
     {
       "roadmap": [
-        { "step": "string", "description": "string", "timeframe": "string" }
+        { 
+          "step": "string", 
+          "description": "string", 
+          "timeframe": "string",
+          "milestones": ["string"]
+        }
       ],
-      "skillsToAcquire": ["string"],
-      "strategicAdvice": ["string"],
-      "interviewQuestions": [
-        { "question": "string", "advice": "string" }
+      "skillsDevelopment": [
+        {
+          "skill": "string",
+          "importance": "High" | "Medium" | "Low",
+          "gap": "string",
+          "resources": ["string"]
+        }
+      ],
+      "strategy": {
+        "jobSearch": ["string"],
+        "networking": ["string"],
+        "growthOpportunities": ["string"]
+      },
+      "interviewPrep": [
+        {
+          "question": "string",
+          "sampleAnswer": "string",
+          "keyPoints": ["string"]
+        }
       ]
-    }`,
+    }
+    
+    Requirements:
+    - Provide at least 5 roadmap steps.
+    - Identify at least 8 key skills with specific learning resources.
+    - Provide at least 15 relevant interview questions with high-quality sample answers.
+    - Ensure all advice is highly specific to the ${onboarding.jobTitle} role in the ${onboarding.industry} industry.`,
     config: {
       responseMimeType: "application/json",
     },

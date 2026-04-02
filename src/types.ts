@@ -44,12 +44,23 @@ export interface CareerRoadmap {
     step: string;
     description: string;
     timeframe: string;
+    milestones: string[];
   }[];
-  skillsToAcquire: string[];
-  strategicAdvice: string[];
-  interviewQuestions: {
+  skillsDevelopment: {
+    skill: string;
+    importance: 'High' | 'Medium' | 'Low';
+    gap: string;
+    resources: string[];
+  }[];
+  strategy: {
+    jobSearch: string[];
+    networking: string[];
+    growthOpportunities: string[];
+  };
+  interviewPrep: {
     question: string;
-    advice: string;
+    sampleAnswer: string;
+    keyPoints: string[];
   }[];
 }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { Logo } from './components/Logo';
 import { Plus, Edit3, Download, FileText, Sparkles, Layout } from 'lucide-react';
 
 interface DashboardProps {
@@ -20,10 +21,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
   return (
     <div className="min-h-screen bg-slate-50 p-12">
       <div className="max-w-6xl mx-auto space-y-12">
-        <header className="flex justify-between items-end">
-          <div className="space-y-2">
-            <h1 className="text-5xl font-black text-slate-900 tracking-tighter">Your Dashboard</h1>
-            <p className="text-slate-500 font-medium">Manage your professional documents and career growth.</p>
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+          <div className="space-y-6">
+            <Logo size="md" />
+            <div className="space-y-2">
+              <h1 className="text-5xl font-black text-slate-900 tracking-tighter">Your Dashboard</h1>
+              <p className="text-slate-500 font-medium">Manage your professional documents and career growth.</p>
+            </div>
           </div>
           <div className="flex gap-4">
             <button onClick={onTailor} className="btn-secondary flex items-center gap-2 px-8 py-4">

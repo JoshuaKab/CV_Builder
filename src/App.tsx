@@ -9,6 +9,7 @@ import { CoverLetterGenerator } from './CoverLetterGenerator';
 import { CVWizard } from './CVWizard';
 import { Dashboard } from './Dashboard';
 import { Onboarding } from './Onboarding';
+import { Logo } from './components/Logo';
 import { AICareerCoach } from './AICareerCoach';
 import { CVTailor } from './CVTailor';
 import { CVData, OnboardingData } from './types';
@@ -309,13 +310,9 @@ ${cvData.skills.join(', ')}
             <ArrowLeft size={20} />
           </button>
           <div className="flex items-center gap-4">
-            <div className="bg-slate-900 p-2.5 rounded-2xl shadow-xl shadow-slate-200/50 rotate-3">
-              <FileText className="text-white" size={22} />
-            </div>
-            <div className="flex flex-col">
-              <h1 className="text-xl font-extrabold tracking-tighter text-slate-900 leading-none">CV<span className="text-brand-500">Builder</span></h1>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1.5">Editing: {cvData.personalInfo.fullName || 'Untitled'}</span>
-            </div>
+            <Logo size="sm" />
+            <div className="h-8 w-px bg-slate-200/50 mx-2" />
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Editing: {cvData.personalInfo.fullName || 'Untitled'}</span>
           </div>
         </div>
 
