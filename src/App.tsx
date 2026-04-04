@@ -16,7 +16,7 @@ import { CVData, OnboardingData } from './types';
 import { Download, FileText, Printer, Sparkles, FileEdit, Upload, Loader2, AlertCircle, ChevronDown, FileCode, ArrowLeft, Layout } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { parseCV } from './geminiService';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, TabStopType, TabStopPosition, BorderStyle } from 'docx';
 import { saveAs } from 'file-saver';
 
 const initialData: CVData = {
@@ -151,72 +151,180 @@ ${cvData.skills.join(', ')}
   };
 
   const exportToDocx = async () => {
+    const { personalInfo, experiences, educations, skills, projects, templateId } = cvData;
+    
+    // Define styles and colors based on template
+    const isSerif = templateId === 'classic' || templateId === 'executive';
+    const brandColor = "2563EB"; // brand-600
+    const accentColor = "475569"; // slate-600
+    const titleFont = isSerif ? "Times New Roman" : "Arial";
+    const bodyFont = isSerif ? "Times New Roman" : "Arial";
+
     const doc = new Document({
       sections: [{
-        properties: {},
+        properties: {
+          page: {
+            margin: {
+              top: 720, // 0.5 inch
+              right: 720,
+              bottom: 720,
+              left: 720,
+            },
+          },
+        },
         children: [
+          // Header
           new Paragraph({
-            text: cvData.personalInfo.fullName || 'Your Name',
-            heading: HeadingLevel.HEADING_1,
-          }),
-          new Paragraph({
+            alignment: AlignmentType.CENTER,
             children: [
-              new TextRun(`${cvData.personalInfo.email} | ${cvData.personalInfo.phone} | ${cvData.personalInfo.location}`),
+              new TextRun({
+                text: personalInfo.fullName || 'Your Name',
+                bold: true,
+                size: 48,
+                font: titleFont,
+                color: "0F172A",
+              }),
             ],
           }),
           new Paragraph({
-            text: "SUMMARY",
-            heading: HeadingLevel.HEADING_2,
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 100, after: 200 },
+            children: [
+              new TextRun({
+                text: [
+                  personalInfo.email,
+                  personalInfo.phone,
+                  personalInfo.location,
+                  personalInfo.linkedin,
+                  personalInfo.website
+                ].filter(Boolean).join('  |  '),
+                size: 18,
+                font: bodyFont,
+                color: accentColor,
+              }),
+            ],
           }),
-          new Paragraph({
-            text: cvData.personalInfo.summary,
-          }),
-          new Paragraph({
-            text: "EXPERIENCE",
-            heading: HeadingLevel.HEADING_2,
-          }),
-          ...cvData.experiences.flatMap(exp => [
+
+          // Summary
+          ...(personalInfo.summary ? [
             new Paragraph({
-              children: [
-                new TextRun({ text: `${exp.position} at ${exp.company}`, bold: true }),
-                new TextRun({ text: ` (${exp.startDate} - ${exp.endDate})`, italics: true }),
-              ],
+              text: "PROFESSIONAL SUMMARY",
+              heading: HeadingLevel.HEADING_2,
+              spacing: { before: 400, after: 200 },
+              border: { bottom: { color: "E2E8F0", space: 1, style: BorderStyle.SINGLE, size: 6 } },
             }),
             new Paragraph({
-              text: exp.description,
+              text: personalInfo.summary,
+              spacing: { after: 200 },
+              alignment: AlignmentType.JUSTIFIED,
             }),
-          ]),
-          new Paragraph({
-            text: "EDUCATION",
-            heading: HeadingLevel.HEADING_2,
-          }),
-          ...cvData.educations.flatMap(edu => [
+          ] : []),
+
+          // Experience
+          ...(experiences.length > 0 ? [
             new Paragraph({
-              children: [
-                new TextRun({ text: edu.degree, bold: true }),
-                new TextRun({ text: ` - ${edu.school}`, italics: true }),
-              ],
+              text: "PROFESSIONAL EXPERIENCE",
+              heading: HeadingLevel.HEADING_2,
+              spacing: { before: 400, after: 200 },
+              border: { bottom: { color: "E2E8F0", space: 1, style: BorderStyle.SINGLE, size: 6 } },
+            }),
+            ...experiences.flatMap(exp => [
+              new Paragraph({
+                spacing: { before: 200 },
+                children: [
+                  new TextRun({ text: exp.position || 'Position', bold: true, size: 24 }),
+                  new TextRun({ text: `\t${exp.startDate} – ${exp.endDate}`, bold: true, size: 18 }),
+                ],
+                tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({ text: exp.company || 'Company', color: brandColor, bold: true, size: 20 }),
+                ],
+              }),
+              new Paragraph({
+                text: exp.description,
+                spacing: { before: 100, after: 200 },
+                alignment: AlignmentType.JUSTIFIED,
+              }),
+            ]),
+          ] : []),
+
+          // Projects
+          ...(projects && projects.length > 0 ? [
+            new Paragraph({
+              text: "KEY PROJECTS",
+              heading: HeadingLevel.HEADING_2,
+              spacing: { before: 400, after: 200 },
+              border: { bottom: { color: "E2E8F0", space: 1, style: BorderStyle.SINGLE, size: 6 } },
+            }),
+            ...projects.flatMap(proj => [
+              new Paragraph({
+                spacing: { before: 200 },
+                children: [
+                  new TextRun({ text: proj.name || 'Project Name', bold: true, size: 24 }),
+                  ...(proj.link ? [new TextRun({ text: `\t${proj.link}`, italics: true, size: 18, color: brandColor })] : []),
+                ],
+                tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
+              }),
+              new Paragraph({
+                text: proj.description,
+                spacing: { before: 100, after: 200 },
+                alignment: AlignmentType.JUSTIFIED,
+              }),
+            ]),
+          ] : []),
+
+          // Education
+          ...(educations.length > 0 ? [
+            new Paragraph({
+              text: "EDUCATION",
+              heading: HeadingLevel.HEADING_2,
+              spacing: { before: 400, after: 200 },
+              border: { bottom: { color: "E2E8F0", space: 1, style: BorderStyle.SINGLE, size: 6 } },
+            }),
+            ...educations.flatMap(edu => [
+              new Paragraph({
+                spacing: { before: 200 },
+                children: [
+                  new TextRun({ text: edu.degree || 'Degree', bold: true, size: 24 }),
+                  new TextRun({ text: `\t${edu.startDate} – ${edu.endDate}`, bold: true, size: 18 }),
+                ],
+                tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({ text: edu.school || 'School', italics: true, size: 20 }),
+                ],
+              }),
+              ...(edu.description ? [
+                new Paragraph({
+                  text: edu.description,
+                  spacing: { before: 100, after: 200 },
+                })
+              ] : []),
+            ]),
+          ] : []),
+
+          // Skills
+          ...(skills.length > 0 && skills[0] !== '' ? [
+            new Paragraph({
+              text: "SKILLS & EXPERTISE",
+              heading: HeadingLevel.HEADING_2,
+              spacing: { before: 400, after: 200 },
+              border: { bottom: { color: "E2E8F0", space: 1, style: BorderStyle.SINGLE, size: 6 } },
             }),
             new Paragraph({
-              text: `${edu.startDate} - ${edu.endDate}`,
+              text: skills.join('  •  '),
+              spacing: { before: 100 },
             }),
-            new Paragraph({
-              text: edu.description,
-            }),
-          ]),
-          new Paragraph({
-            text: "SKILLS",
-            heading: HeadingLevel.HEADING_2,
-          }),
-          new Paragraph({
-            text: cvData.skills.join(', '),
-          }),
+          ] : []),
         ],
       }],
     });
 
     const blob = await Packer.toBlob(doc);
-    saveAs(blob, `${cvData.personalInfo.fullName.replace(/\s+/g, '_') || 'My'}_CV.docx`);
+    saveAs(blob, `${personalInfo.fullName.replace(/\s+/g, '_') || 'My'}_CV.docx`);
     setShowExportOptions(false);
   };
 
@@ -269,14 +377,31 @@ ${cvData.skills.join(', ')}
   if (view === 'dashboard') {
     return (
       <Dashboard 
+        cvData={cvData}
         onCreateNew={() => {
           setCvData(initialData);
-          setView('wizard');
+          setView('onboarding');
         }}
         onEditExisting={() => setView('wizard')}
-        onExport={() => setView('wizard')}
+        onExport={() => {
+          setView('wizard');
+          setShowExportOptions(true);
+        }}
         onCareerCoach={() => setView('career-coach')}
         onTailor={() => setIsTailorModalOpen(true)}
+        onDelete={() => {
+          if (confirm('Are you sure you want to delete this CV? This action cannot be undone.')) {
+            localStorage.removeItem('cv-data');
+            setCvData(initialData);
+            setView('onboarding');
+          }
+        }}
+        onDuplicate={() => {
+          // In a single-CV app, duplicate just means starting a new one with current data as base
+          // but maybe we just show a success message for now or actually "copy" it.
+          // For now, let's just enter the wizard with current data.
+          setView('wizard');
+        }}
       />
     );
   }
@@ -533,6 +658,8 @@ ${cvData.skills.join(', ')}
             background-color: white !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            margin: 0 !important;
+            padding: 0 !important;
           }
           .print\\:hidden { display: none !important; }
           .print\\:block { display: block !important; }
@@ -543,14 +670,19 @@ ${cvData.skills.join(', ')}
           .print\\:w-full { width: 100% !important; }
           .print\\:max-w-none { max-width: none !important; }
           
-          /* Ensure the preview takes up the whole page */
+          /* Ensure the preview takes up the whole page and is centered */
           main { 
-            display: block !important; 
+            display: flex !important;
+            justify-content: center !important;
+            align-items: flex-start !important;
             padding: 0 !important;
             margin: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
           }
           .lg\\:grid-cols-\\[1fr_1fr\\] {
             display: block !important;
+            width: 100% !important;
           }
           
           /* Hide everything except the preview column */
@@ -562,6 +694,7 @@ ${cvData.skills.join(', ')}
             max-width: none !important;
             margin: 0 !important;
             padding: 0 !important;
+            display: block !important;
           }
           .sticky {
             position: static !important;
@@ -578,6 +711,30 @@ ${cvData.skills.join(', ')}
           /* Hide the "Live Preview" header during print */
           main > div:last-child > div > div:first-child {
             display: none !important;
+          }
+          
+          /* Ensure CVPreview content fills the page correctly */
+          .bg-white.p-12.rounded-\\[3rem\\] {
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            min-height: 100vh !important;
+          }
+
+          /* Force background colors and images */
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          /* Page break control */
+          section {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+          h1, h2, h3 {
+            page-break-after: avoid !important;
+            break-after: avoid !important;
           }
         }
       `}} />
